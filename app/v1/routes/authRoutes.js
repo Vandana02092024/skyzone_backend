@@ -1,0 +1,15 @@
+const router = express.Router();
+import express from "express";
+import {
+    createUser,
+    verifyOtp,
+    resendOtp,
+    login
+} from "../controllers/AuthenticationController.js";
+
+router.post('/register', createUser);
+router.post('/verify_otp', verifyOtp);
+router.post('/resend_otp', resendOtp);
+router.post('/login', login);
+
+export default router;
