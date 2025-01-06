@@ -66,35 +66,28 @@ export const fetchManagers = async (req, res) => {
   var page = req.query.page ? parseInt(req.query.page) : 1;
   var items_per_page = req.query.items_per_page
     ? parseInt(req.query.items_per_page)
-    : 50;
+    : 10;
   var search = req.query.search;
   var search_query = search ? search : false;
   var status = req.query.status ? req.query.status : 1;
-  var role = parseInt(req.user.role);
-  const userId = req.user.user_id;
+  var client_id = req.query.client_id;
+  if(!client_id) {
+    return res.status(200).json(CommonFunction.errMessage("Client ID is required."));
+  }
+
   let userRec;
   let totalRec;
   let total_pages;
-  if (role === 1) {
-     userRec = await getAllManagers(
-      status,
-      page,
-      items_per_page,
-      search_query
-    ); 
-    totalRec = await getCount(status, search_query);
-    total_pages = Math.ceil(totalRec.data / items_per_page);
-  } else {
-     userRec = await getAllManagers(
-      status,
-      page,
-      items_per_page,
-      search_query,
-      userId
-    ); 
-    totalRec = await getCount(status,userId, search_query);
-    total_pages = Math.ceil(totalRec.data / items_per_page);
-  }
+
+  userRec = await getAllManagers(
+    status,
+    page,
+    items_per_page,
+    search_query,
+    client_id
+  ); 
+  totalRec = await getCount(status,client_id, search_query);
+  total_pages = Math.ceil(totalRec.data / items_per_page);
 
     if (userRec.code)
       res.status(200).json(

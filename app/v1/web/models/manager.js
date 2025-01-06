@@ -17,13 +17,10 @@ export const getAllManagers = async (
   page,
   items_per_page,
   search = false,
-  userId = null,
+  client_id
 ) => {
   
-  var where = { status: status};
-  if (userId) {
-    var where = { status: status , created_by: userId};
-  }
+  var where = { status: status, client_id: client_id};
 
   if (search !== false) {
     where = {
@@ -34,17 +31,6 @@ export const getAllManagers = async (
       ],
       status: status,
     };
-    if(userId) {
-      where = {
-        [Op.or]: [
-          { fname: { [Op.like]: `%${search}%` } },
-          { lname: { [Op.like]: `%${search}%` } },
-          { designation: { [Op.like]: `%${search}%` } },
-        ],
-        status: status,
-        created_by: userId
-      };
-    }
   }
 
   try {
@@ -62,11 +48,8 @@ export const getAllManagers = async (
 };
 
 // GET COUNT //
-export const getCount = async (status,userId=false, search = false) => {
-  var where = { status: status };
-  if(userId != false){
-    where = {status: status, created_by: userId}
-  }
+export const getCount = async (status,client_id, search = false) => {
+  var where = { status: status,client_id:client_id };
 
   if (search !== false) {
     where = {
